@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RULEX Console - Explainable AI Rule Orchestrator</title>
+    <meta name="description" content="An interactive, premium dashboard demonstrating and explaining Machine Learning Rule Extraction methods: Global Surrogates, Local Anchors, and RuleFit.">
+    <link rel="stylesheet" href="style.css?v=13">
+</head>
+<body>
+
+    <!-- App Header & Slide Presenter HUD -->
+    <header class="app-header">
+        <div class="brand">
+            <div class="brand-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>
+                <h1>RULEX Console</h1>
+            </div>
+        </div>
+        
+        <!-- Complexity Level Switcher -->
+        <div class="complexity-level-switcher">
+            <span class="switcher-label">View Level</span>
+            <div class="switcher-buttons">
+                <button class="switcher-btn active" id="btnToggleSimple">Simple Mode</button>
+                <button class="switcher-btn" id="btnToggleAcademic">Academic Details</button>
+            </div>
+        </div>
+
+        <!-- Presenter HUD Slide Controller -->
+        <div class="presenter-hud">
+            <span class="hud-title">Presenter HUD</span>
+            <div class="hud-controls">
+                <button class="hud-btn" id="hudPrev">◀ Prev</button>
+                <span class="hud-slide-info" id="hudSlideInfo">Slide 1/5</span>
+                <button class="hud-btn" id="hudNext">Next ▶</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <ul class="nav-links">
+                <li class="nav-item active" data-tab="home">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            <polyline points="9 22 9 12 15 12 15 22"/>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item" data-tab="playground">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="14" width="7" height="7" rx="1"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        </svg>
+                        Playground
+                    </a>
+                </li>
+                <li class="nav-item" data-tab="story">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+                        </svg>
+                        How It Works
+                    </a>
+                </li>
+                <li class="nav-item" data-tab="presentation">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                        Slide Deck
+                    </a>
+                </li>
+                <li class="nav-item" data-tab="instructions">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="16" x2="12" y2="12"/>
+                            <line x1="12" y1="8" x2="12.01" y2="8"/>
+                        </svg>
+                        Instructions
+                    </a>
+                </li>
+                <li class="nav-item simple-hidden" data-tab="math">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 19h16v2H4zm0-4h16v2H4zm0-4h16v2H4zm0-4h16v2H4z"/>
+                        </svg>
+                        Math & Theory
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                RULEX Console v1.0.0<br>
+                GDPR & EU AI Act compliant
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            
+            <!-- TAB 0: HOME LANDING PAGE (CYBORG STYLE) -->
+            <div class="tab-content active" id="homeView">
+                <div class="home-navbar">
+                    <div class="home-logo">
+                        <span>RULEX</span>
+                    </div>
+                    <ul class="home-nav-links">
+                        <li><a href="#" onclick="setTab('playground')">SANDBOX</a></li>
+                        <li><a href="#" onclick="setTab('story')">IDEAS</a></li>
+                        <li class="simple-hidden"><a href="#" onclick="setTab('math')">THEORY</a></li>
+                        <li><a href="#" onclick="setTab('presentation')">COMPLIANCE</a></li>
+                    </ul>
+                    <div class="home-nav-search">
+                        <span>SEARCH</span>
+                        <svg viewBox="0 0 24 24" class="search-icon"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+                    </div>
+                </div>
+                <div class="hero-view">
+                    <div class="hero-left">
+                        <h1 class="hero-title">RULEX</h1>
+                        <p class="hero-subtitle">NEURAL BOUNDARY AUDITOR</p>
+                        <p class="hero-description">An interactive, high-fidelity rule extraction console. Instantly inspect hidden layer neuron activations, partition global models into transparent decision trees, lock local rules, and compile weights into production-ready SQL/Python queries.</p>
+                        
+                        <div class="hero-buttons">
+                            <button class="btn-cyber-primary" onclick="setTab('playground')">LAUNCH SANDBOX</button>
+                            <button class="btn-cyber-secondary" onclick="setTab('story')">HOW IT WORKS</button>
+                        </div>
+
+                        <!-- 3 Pillars Features Grid (Context) -->
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <h3>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                    01. Inspect Black Box
+                                </h3>
+                                <p>Inspect connections, weights, and live neural activation pathways of deep MLPs in real time.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                                    02. Extract Surrogates
+                                </h3>
+                                <p>Recursive Information Gain splits complex neural bounds into readable global decision trees.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    03. Compile Compliance
+                                </h3>
+                                <p>Verify rules for GDPR/EU AI Act transparency and export them directly to database SQL rules.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB 1: PLAYGROUND (3 PANELS) -->
+            <div class="tab-content" id="playgroundView">
+                <div class="playground-grid">
+                    
+                    <!-- LEFT PANEL: DATA & DECISION CANVAS -->
+                    <section class="panel canvas-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="16"/>
+                                    <line x1="8" y1="12" x2="16" y2="12"/>
+                                </svg>
+                                Data Arena
+                            </h2>
+                        </div>
+                        <div class="panel-body">
+                            <!-- Quick-Start Presets -->
+                            <div class="control-group">
+                                <span class="control-label">Quick Start Presets</span>
+                                <div class="presets-grid onboarding-pulse" id="presetsGrid">
+                                    <button class="preset-card-btn" id="presetMoons" title="Explore basic decision boundaries on simple synthetic data.">
+                                        <span class="preset-badge">PRESET 1 // SYNTHETIC</span>
+                                        <span class="preset-title">Moons Arena</span>
+                                        <span class="preset-desc">Inspect simple decision trees & blend NN boundaries.</span>
+                                    </button>
+                                    <button class="preset-card-btn" id="presetDiabetes" title="Audit a clinical model for diabetes prediction.">
+                                        <span class="preset-badge">PRESET 2 // HEALTHCARE</span>
+                                        <span class="preset-title">Diabetes Risk</span>
+                                        <span class="preset-desc">Lock local anchors & compile SQL rule compliance.</span>
+                                    </button>
+                                    <button class="preset-card-btn" id="presetTitanic" title="Test a policy model on passenger survivability.">
+                                        <span class="preset-badge">PRESET 3 // DEMOGRAPHIC</span>
+                                        <span class="preset-title">Titanic Survival</span>
+                                        <span class="preset-desc">Evaluate demographic fairness & compliance audits.</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Dataset Type Toggle -->
+                            <div class="control-group">
+                                <span class="control-label">Dataset Format</span>
+                                <div class="btn-toggle-group">
+                                    <button class="btn-toggle active" id="toggleSynthetic" title="Use 2D synthetic datasets to visualize decision boundaries in real time.">2D Synthetic</button>
+                                    <button class="btn-toggle" id="toggleTabular" title="Use real-world multi-dimensional datasets to perform audit compliance.">Real Tabular</button>
+                                </div>
+                            </div>
+
+                            <!-- Synthetic Datasets Select -->
+                            <div class="control-group" id="synthetic-dataset-controls">
+                                <span class="control-label">Synthetic Data Set</span>
+                                <select id="datasetSelectSynthetic" title="Select the distribution shape of data points in the arena.">
+                                    <option value="moons">Interleaving Moons</option>
+                                    <option value="circles">Concentric Circles</option>
+                                    <option value="spiral">Double Spiral</option>
+                                </select>
+                            </div>
+
+                            <!-- Tabular Datasets Select -->
+                            <div class="control-group" id="tabular-dataset-controls" style="display: none;">
+                                <span class="control-label">Tabular Data Set</span>
+                                <select id="datasetSelectTabular" title="Select a structured dataset loaded from CSV datasets.">
+                                    <option value="diabetes">Pima Indians Diabetes</option>
+                                    <option value="titanic">Titanic Survival</option>
+                                    <option value="iris">Iris Flowers</option>
+                                </select>
+                            </div>
+
+                            <!-- Parameters -->
+                            <div class="control-group">
+                                <div class="slider-container">
+                                    <span class="control-label">
+                                        <span>
+                                            Data Noise (Complexity)
+                                            <span class="math-tooltip-trigger" title="Data Noise introduces random variation to the point coordinates. High noise creates complex, overlapping boundaries that test the model's accuracy.">?</span>
+                                        </span>
+                                        <span class="control-value" id="noiseVal">0.10</span>
+                                    </span>
+                                    <input type="range" id="sliderNoise" min="0.0" max="0.3" step="0.05" value="0.1" title="Increase noise to make boundary lines winding and test surrogate accuracy.">
+                                    <div class="slider-labels">
+                                        <span>Clean</span>
+                                        <span>Normal</span>
+                                        <span>Noisy</span>
+                                        <span>Chaos</span>
+                                    </div>
+                                    <div class="noise-status-badge" id="noiseStatusBadge">
+                                        <span class="badge-dot"></span>
+                                        <span id="noiseExplanation">Moderate Overlap — Normal variance, standard complexity.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Interactive 2D Plot Canvas -->
+                            <div class="canvas-wrapper">
+                                <canvas id="decisionCanvas" width="400" height="400"></canvas>
+                            </div>
+
+                            <!-- Legend -->
+                            <div class="canvas-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color red"></div>
+                                    <span>Class 0 (Negative)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color blue"></div>
+                                    <span>Class 1 (Positive)</span>
+                                </div>
+                            </div>
+
+                            <!-- Boundary Blend Overlay -->
+                            <div class="control-group simple-hidden">
+                                <div class="slider-container">
+                                    <span class="control-label">Boundary Blend (NN ➜ Tree) <span class="control-value" id="transitionVal">0%</span></span>
+                                    <input type="range" id="sliderTransition" min="0.0" max="1.0" step="0.05" value="0.0" title="Slide to morph the 2D plot between neural network boundaries and surrogate rules.">
+                                </div>
+                            </div>
+
+                            <!-- Discrepancy Heatmap Toggle -->
+                            <button class="btn-toggle simple-hidden" style="width:100%; border: 1px solid var(--border-color); border-radius: var(--radius-md);" id="toggleDiscrepancies" title="Highlight regions where the surrogate decision tree contradicts the neural network.">
+                                ⚠️ Show Decision Discrepancies
+                            </button>
+
+                            <!-- Tabular Grid Table Display -->
+                            <div class="control-group" id="tabular-grid-wrapper" style="display: none;">
+                                <span class="control-label">Tabular Rows (Select one to explain)</span>
+                                <div class="data-grid-container" id="tabularGrid">
+                                    <!-- Populated via Javascript -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- CENTER PANEL: PIPELINE EXTRACATION ENGINES -->
+                    <section class="panel engines-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                                </svg>
+                                AI Explanation Pipeline
+                            </h2>
+                        </div>
+                    
+                    <!-- Pipeline Placeholder (Progressive Disclosure) -->
+                    <div class="pipeline-placeholder-wrapper" id="pipelinePlaceholder">
+                        <div class="placeholder-icon">🎯</div>
+                        <h3>AI Pipeline Locked</h3>
+                        <p>To inspect neural node flows and extract rules, please select a data point by clicking on the 2D plot or selecting a row in the Tabular Grid.</p>
+                        <div class="placeholder-hint">Hint: Switch to "Real Tabular" format and select a row to begin!</div>
+                    </div>
+                    
+                    <!-- Pipeline Horizontal Steps Navigation -->
+                    <div class="pipeline-steps-container" id="pipelineStepsContainer" style="display: none;">
+                            <button class="step-btn active" id="btnEngineMlp" onclick="setEngineTab('mlp')" title="View the active neurons and connection weights inside the black box.">
+                                <span class="step-num">01</span>
+                                <span class="step-label">Neural Net</span>
+                            </button>
+                            <button class="step-btn" id="btnEngineSurrogate" onclick="setEngineTab('surrogate')" title="Train a global surrogate decision tree to approximate neural net behavior.">
+                                <span class="step-num">02</span>
+                                <span class="step-label">Global Tree</span>
+                            </button>
+                            <button class="step-btn" id="btnEngineAnchors" onclick="setEngineTab('anchors')" title="Isolate a local rule constraint that holds true with high confidence.">
+                                <span class="step-num">03</span>
+                                <span class="step-label">Local Anchor</span>
+                            </button>
+                            <button class="step-btn" id="btnEngineRulefit" onclick="setEngineTab('rulefit')" title="Mine rules from ensembles and calculate lasso coefficient weights.">
+                                <span class="step-num">04</span>
+                                <span class="step-label">RuleFit Sets</span>
+                            </button>
+                            <button class="step-btn" id="btnEngineGovernance" onclick="setEngineTab('governance')" title="Check compliance checklist and export case logic code.">
+                                <span class="step-num">05</span>
+                                <span class="step-label">Audit & Deploy</span>
+                            </button>
+                        </div>
+
+                        <div class="pipeline-stage-content" id="pipelineStageContent" style="display: none;">
+                            <!-- STAGE 1: MLP BLACK-BOX CONTROLLER -->
+                            <div class="stage-card active" id="stageMlp">
+                                <div class="stage-header">
+                                    <span class="stage-badge">Stage 1</span>
+                                    <span style="font-weight:600;">Neural Network Activations</span>
+                                </div>
+                                <div class="stage-content">
+                                    <p class="stage-explanation-text">How the Black-Box Neural Network processes data. Select a point on the canvas to see real-time node activation flows.</p>
+                                    <div class="mlp-visualizer">
+                                        <!-- Layer 1 (Input) -->
+                                        <div class="mlp-layer">
+                                            <div class="mlp-node input">X1</div>
+                                            <div class="mlp-node input">X2</div>
+                                        </div>
+                                        <!-- Layer 2 (Hidden) -->
+                                        <div class="mlp-layer">
+                                            <div class="mlp-node">h1</div>
+                                            <div class="mlp-node">h2</div>
+                                            <div class="mlp-node">h3</div>
+                                            <div class="mlp-node">h4</div>
+                                            <div class="mlp-node">h5</div>
+                                            <div class="mlp-node">h6</div>
+                                        </div>
+                                        <!-- Layer 3 (Output) -->
+                                        <div class="mlp-layer">
+                                            <div class="mlp-node output">Y</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="wizard-controls">
+                                        <button class="wizard-btn-next" onclick="navigateStage(1)">Next Step: Global Tree ➜</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STAGE 2: GLOBAL SURROGATE (DECISION TREE) -->
+                            <div class="stage-card" id="stageSurrogate" style="display: none;">
+                                <div class="stage-header">
+                                    <span class="stage-badge">Stage 2</span>
+                                    <span style="font-weight:600;">Global Surrogate Tree</span>
+                                </div>
+                                <div class="stage-content">
+                                    <p class="stage-explanation-text">A decision tree surrogate maps the overall logic of the neural network. Adjust the max depth to balance interpretability and accuracy.</p>
+                                    <div class="control-group simple-hidden" style="margin-bottom: 12px;">
+                                        <div class="slider-container">
+                                            <span class="control-label">Max Tree Depth <span class="control-value" id="treeDepthVal">3</span></span>
+                                            <input type="range" id="sliderDepth" min="1" max="5" step="1" value="3" title="Adjust the maximum depth of the surrogate tree. More depth = higher fidelity but more complex rules.">
+                                        </div>
+                                    </div>
+                                    <div class="tree-visualizer-container">
+                                        <svg id="treeSvg"></svg>
+                                    </div>
+                                    
+                                    <div class="wizard-controls">
+                                        <button class="wizard-btn-back" onclick="navigateStage(-1)">◀ Back</button>
+                                        <button class="wizard-btn-next" onclick="navigateStage(1)">Next Step: Local Anchor ➜</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STAGE 3: LOCAL ANCHORS SEARCH -->
+                            <div class="stage-card" id="stageAnchors" style="display: none;">
+                                <div class="stage-header">
+                                    <span class="stage-badge">Stage 3</span>
+                                    <span style="font-weight:600;">Local Anchors Engine</span>
+                                </div>
+                                <div class="stage-content">
+                                    <p class="stage-explanation-text">Anchors isolate a specific data point. It tests a swarm of local variations (perturbations) to find a high-probability rule that locks in the prediction.</p>
+                                    <div class="anchor-metrics">
+                                        <div class="metric-card">
+                                            <div class="metric-title">Rule Precision</div>
+                                            <div class="metric-value green" id="anchorPrecisionVal">0.0%</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <div class="metric-title">Rule Coverage</div>
+                                            <div class="metric-value indigo" id="anchorCoverageVal">0.0%</div>
+                                        </div>
+                                    </div>
+                                    <div class="anchor-rule-text" id="anchorRuleText">
+                                        Click a point on the canvas to run the local Anchors search algorithm...
+                                    </div>
+                                    
+                                    <div class="wizard-controls">
+                                        <button class="wizard-btn-back" onclick="navigateStage(-1)">◀ Back</button>
+                                        <button class="wizard-btn-next" onclick="navigateStage(1)">Next Step: RuleFit Sets ➜</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STAGE 4: RULEFIT COEFFICIENTS -->
+                            <div class="stage-card" id="stageRulefit" style="display: none;">
+                                <div class="stage-header">
+                                    <span class="stage-badge">Stage 4</span>
+                                    <span style="font-weight:600;">RuleFit Coefficients</span>
+                                </div>
+                                <div class="stage-content">
+                                    <p class="stage-explanation-text">RuleFit extracts linear features and tree path rules, and performs Lasso regularization to assign weights indicating positive or negative impact.</p>
+                                    <div class="rulefit-chart" id="rulefitChart">
+                                        <!-- Populated via Javascript -->
+                                    </div>
+                                    
+                                    <div class="wizard-controls">
+                                        <button class="wizard-btn-back" onclick="navigateStage(-1)">◀ Back</button>
+                                        <button class="wizard-btn-next" onclick="navigateStage(1)">Next Step: Audit & Deploy ➜</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STAGE 5: GOVERNANCE & DEPLOY -->
+                            <div class="stage-card" id="stageGovernance" style="display: none;">
+                                <div class="stage-header">
+                                    <span class="stage-badge">Stage 5</span>
+                                    <span style="font-weight:600;">Governance & Deployment Code</span>
+                                </div>
+                                <div class="stage-content">
+                                    <p class="stage-explanation-text">Audit the rules against compliance protocols (like the EU AI Act or GDPR Article 22) and export rule logic to database code.</p>
+                                    
+                                    <!-- Auditing checklist -->
+                                    <div class="control-group" style="margin-bottom: 20px;">
+                                        <span class="control-label">EU AI Act / GDPR Check</span>
+                                        <div class="checklist-card" id="complianceChecklist">
+                                            <!-- Populated via Javascript -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Live compilers -->
+                                    <div class="control-group simple-hidden" style="margin-bottom: 20px;">
+                                        <span class="control-label">Production Code Compiler</span>
+                                        <div class="compiler-card">
+                                            <div class="control-label">Compiled Python Function</div>
+                                            <div class="code-pre-container">
+                                                <pre><code id="codePython"># Select a point to compile rules...</code></pre>
+                                            </div>
+
+                                            <div class="control-label" style="margin-top: 10px;">Compiled SQL Query</div>
+                                            <div class="code-pre-container">
+                                                <pre><code id="codeSql">-- Select a point to compile SQL queries...</code></pre>
+                                            </div>
+
+                                            <div class="control-label" style="margin-top: 10px;">Compiled PMML Schema</div>
+                                            <div class="code-pre-container">
+                                                <pre><code id="codePmml">&lt;!-- Select a point to compile PMML... --&gt;</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Report generation -->
+                                    <button class="btn-action" id="btnDownloadReport" style="width: 100%;">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                                        </svg>
+                                        Generate Audit Report
+                                    </button>
+                                    
+                                    <div class="wizard-controls">
+                                        <button class="wizard-btn-back" onclick="navigateStage(-1)">◀ Back</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- TAB 2: HOW IT WORKS STORY -->
+            <div class="tab-content" id="storyView">
+                <div class="story-view">
+                     
+                     <!-- STAGE 1 CARD -->
+                     <div class="story-card">
+                         <div class="story-icon">
+                             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+                         </div>
+                         <div class="story-body">
+                             <h2>Stage 1: The Detective in the Black Box</h2>
+                             <!-- Simple Mode View -->
+                             <div class="simple-only">
+                                 <p><strong>The Challenge:</strong> Imagine a bank uses an advanced Artificial Intelligence (AI) model to approve small-business loans. Elena, a local bakery owner with an excellent credit score, is suddenly rejected by the algorithm. When she asks why, the engineering team opens the model, but they are met with a "black box" containing millions of abstract numbers (weights) and mathematical transformations. Nobody can explain <em>why</em> the decision was made. This lack of explanation violates legal guidelines like GDPR Article 22, which guarantees individuals the right to understand automated decisions.</p>
+                                 <p><strong>The Solution:</strong> This website acts as a <strong>digital detective</strong>. Rule Extraction is the technique of translating the massive, unreadable calculations inside the AI into simple, logical rules that any human can understand:
+                                 <code style="display:block; margin:8px 0; padding:6px; background:rgba(255,255,255,0.04); border-radius:4px;">IF income &lt; 20,000 AND debt &gt; 50,000 THEN reject loan.</code>
+                                 Our goal is to achieve <strong>Explainable AI (XAI)</strong> to build trust, safety, and compliance.</p>
+                             </div>
+                             <!-- Academic Details View -->
+                             <div class="academic-only">
+                                 <p><strong>Mathematical Formulation:</strong> In multi-layer neural network architectures (Multi-Layer Perceptrons), input features \(x \in \mathbb{R}^d\) are mapped to predictions \(\hat{y}\) through weight matrices \(W_l\), bias vectors \(b_l\), and non-linear activation functions \(\sigma\):
+                                 \[\hat{y} = f(x) = \sigma\left(W_2 \cdot \tanh(W_1 \cdot x + b_1) + b_2\right)\]
+                                 While this high-dimensional mapping yields exceptional predictive accuracy, the millions of parameters make manual verification mathematically impossible. The primary goal of rule extraction is to approximate this complex decision boundary \(f(x)\) with an interpretable surrogate function \(g(x)\) composed of discrete logical conjuncts, enabling compliance audits under GDPR Article 22.</p>
+                                 <p>There are three academic standard methodologies used for rule extraction:
+                                 <ul>
+                                     <li><strong>Pedagogical (Black-Box):</strong> Treats the neural network as a closed system, modeling its input-output behavior.</li>
+                                     <li><strong>Decompositional (White-Box):</strong> Directly extracts rules by analyzing weights and activation thresholds of individual neurons.</li>
+                                     <li><strong>Eclectic / Hybrid:</strong> Combines elements of both, leveraging inner structure and global outputs.</li>
+                                 </ul>
+                                 </p>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     <!-- STAGE 2 CARD -->
+                     <div class="story-card">
+                         <div class="story-icon">
+                             <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                         </div>
+                         <div class="story-body">
+                             <h2>Stage 2: Global Surrogates (Pedagogical Extraction)</h2>
+                             <!-- Simple Mode View -->
+                             <div class="simple-only">
+                                 <p><strong>The Concept:</strong> A "Global Surrogate" maps the overall logic of the AI. Think of it like <strong>"interviewing an expert."</strong> Since the AI is a black box, we cannot look inside its brain. Instead, we ask it hundreds of questions (feed it test cases), watch its answers ("Approved" or "Denied"), and write down a simplified rulebook (a Decision Tree) that mimics its behavior.</p>
+                                 <p><strong>The Trade-Off (Fidelity vs. Complexity):</strong> We measure how closely our rulebook matches the AI using a metric called <strong>Fidelity</strong>.
+                                 <ul>
+                                     <li>If we write a short rulebook (e.g., 2 rules), it is easy for a human to read, but the <strong>Fidelity</strong> will be low (the rules won't match the AI's actual decisions very well).</li>
+                                     <li>If we write a huge rulebook (e.g., 50 rules), it will match the AI perfectly (high fidelity), but it will be impossible for a human to read. The slider on our site lets you find the perfect balance!</li>
+                                 </ul>
+                                 </p>
+                             </div>
+                             <!-- Academic Details View -->
+                             <div class="academic-only">
+                                 <p><strong>Methodology:</strong> A Pedagogical global surrogate model \(g(x)\) (such as a Decision Tree) is trained directly on the predictions \(\hat{y} = f(x)\) generated by the black-box neural network, rather than the true labels \(y\). The tree is built using greedy recursive partitioning to maximize **Information Gain** (using Shannon Entropy \(H(T)\)) at each split point:
+                                 \[H(T) = -\sum_{i=1}^C p_i \log_2 p_i\]
+                                 \[IG(T, a) = H(T) - \sum_{v \in \text{values}(a)} \frac{|T_v|}{|T|} H(T_v)\]
+                                 The **Surrogate Fidelity** calculates the degree to which \(g(x)\) approximates the neural network's decision boundary:
+                                 \[\text{Fidelity}(g; f) = \frac{1}{|D|} \sum_{x \in D} \mathbb{I}(g(x) = f(x))\]
+                                 By controlling the "Max Depth" hyperparameter, you explore the Pareto frontier of explanation complexity vs. fidelity. Regions of conflict are highlighted as *Decision Discrepancies*.</p>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     <!-- STAGE 3 CARD -->
+                     <div class="story-card">
+                         <div class="story-icon">
+                             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                         </div>
+                         <div class="story-body">
+                             <h2>Stage 3: Local Anchors (Decompositional & Hybrid Focus)</h2>
+                             <!-- Simple Mode View -->
+                             <div class="simple-only">
+                                 <p><strong>The Concept:</strong> Sometimes explaining the whole model is too difficult. Instead, we only want to explain one single case (like Elena's loan rejection). <strong>Local Anchors</strong> solve this by zooming in on a single data point. The system makes hundreds of minor changes to Elena's profile (e.g., slightly altering income, debt, and credit score) and tests them against the AI.</p>
+                                 <p>It searches for the shortest, most powerful rule (an "Anchor") that guarantees the AI will give the same prediction (rejection) in 95% of those modified profiles. It creates a localized boundary box around her profile, giving a highly precise explanation for that individual decision without needing to explain the entire global network.</p>
+                             </div>
+                             <!-- Academic Details View -->
+                             <div class="academic-only">
+                                 <p><strong>Mathematical Definition:</strong> An Anchor represents a local rule constraint \(A\) such that if an instance \(x\) satisfies \(A\) (i.e. \(A(x) = 1\)), the black-box model \(f(x)\) yields the same prediction with high probability \(\ge \tau\) (typically \(\tau = 95\%\)) under a localized perturbation distribution \(\mathcal{D}_x(z|A)\):
+                                 \[\mathbb{P}_{z \sim \mathcal{D}_x(z|A)} [f(x) = f(z)] \ge \tau\]
+                                 <strong>Optimization Strategy:</strong> Finding the coarsest rule \(A\) that satisfies this precision constraint is formulated as a Multi-Armed Bandit problem. Using the KL-LUCB algorithm, we sample local perturbations to bound the precision confidence interval, maximizing the **Coverage** (percentage of the global dataset matching the rule):
+                                 \[\text{Cov}(A) = \mathbb{P}_{z \sim \mathcal{D}} [A(z) = 1]\]</p>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     <!-- STAGE 4 CARD -->
+                     <div class="story-card">
+                         <div class="story-icon">
+                             <svg viewBox="0 0 24 24"><path d="M4 19h16v2H4zm0-4h16v2H4zm0-4h16v2H4zm0-4h16v2H4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                         </div>
+                         <div class="story-body">
+                             <h2>Stage 4: RuleFit Coefficients (Eclectic Method)</h2>
+                             <!-- Simple Mode View -->
+                             <div class="simple-only">
+                                 <p><strong>The Concept:</strong> Instead of building a single decision tree, what if we could combine many rules? RuleFit first extracts hundreds of rules from a large forest of decision trees. However, displaying all of them would be overwhelming. To fix this, the system runs a mathematical filter (called a Lasso filter) that evaluates all rules and raw features together.</p>
+                                 <p>It discards redundant or weak rules, leaving behind a compact set of highly influential rules. Each rule is assigned a positive or negative coefficient (weight), showing exactly which rules push the model to approve or reject, capturing non-linear interactions between variables.</p>
+                             </div>
+                             <!-- Academic Details View -->
+                             <div class="academic-only">
+                                 <p><strong>Formulation:</strong> RuleFit combines linear feature terms \(x_j\) and tree-derived conjunct rules \(r_k(x) \in \{0,1\}\) into a single sparse linear model:
+                                 \[\hat{y}(x) = \beta_0 + \sum_{j=1}^p \beta_j x_j + \sum_{k=1}^K \alpha_k r_k(x)\]
+                                 To extract only the most predictive rules and enforce extreme sparsity, we solve the objective function with a Lasso (\(L_1\) norm) regularization penalty \(\lambda\):
+                                 \[\min_{\beta, \alpha} \left\{ \frac{1}{N}\sum_{i=1}^N \mathcal{L}(y_i, \hat{y}(i)) + \lambda \left( \sum_{j=1}^p |\beta_j| + \sum_{k=1}^K |\alpha_k| \right) \right\}\]
+                                 This eclectic approach merges neural net predictions, ensemble-generated path structures, and linear models to display active coefficients.</p>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     <!-- STAGE 5 CARD -->
+                     <div class="story-card">
+                         <div class="story-icon">
+                             <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                         </div>
+                         <div class="story-body">
+                             <h2>Stage 5: Governance, Auditing & Deployment</h2>
+                             <!-- Simple Mode View -->
+                             <div class="simple-only">
+                                 <p><strong>The Goal:</strong> Having the rules is only the first step. In production, we must perform a **compliance audit** to verify that the AI is fair, unbiased, and legal. For example, we check if the extracted rules rely on sensitive attributes like gender or age to make decisions (which is illegal under EU AI Act guidelines).</p>
+                                 <p><strong>The Compilation:</strong> Once audited, we compile the logical rules directly into standard programming code like **Python functions** or **SQL database queries**. This code runs at lightning speed directly inside production databases, replacing the complex neural network with transparent, auditable code that guarantees safety and compliance.</p>
+                             </div>
+                             <!-- Academic Details View -->
+                             <div class="academic-only">
+                                 <p><strong>Deployment Pipeline:</strong> Approved rules are serialized into PMML (Predictive Model Markup Language) XML schemas or exported as high-performance database case constructs:
+                                 <pre style="font-size:0.75rem; background:#050505; padding:8px; border-radius:4px; margin-top:8px;"><code>CASE WHEN age < 30 AND debt > 50000 THEN 0 ELSE 1 END</code></pre>
+                                 This governance step audits the extracted rules for demographic parity and fairness. By executing compiled SQL queries directly on production databases, it bypasses the runtime latencies, execution environments, and uninterpretable black-box pathways of deep neural networks, meeting both strict engineering SLA requirements and modern AI compliance acts.</p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+            <!-- TAB 3: SLIDE PRESENTATION DECK -->
+            <div class="tab-content" id="presentationView">
+                <div class="presentation-view">
+                    <div class="slide-deck">
+                        <div class="slide-content" id="slideDeckContent">
+                            <!-- Populated via HUD transitions -->
+                        </div>
+                        <div class="slide-footer">
+                            <span>RULEX Console Presentation</span>
+                            <div class="hud-controls">
+                                <button class="hud-btn" id="btnPrevSlide">◀</button>
+                                <button class="hud-btn" id="btnNextSlide">▶</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB 5: INSTRUCTIONS USER MANUAL -->
+            <div class="tab-content" id="instructionsView">
+                <div class="instructions-view">
+                    <div class="instructions-header">
+                        <h1>User Guide & Interactive Instructions</h1>
+                        <p>Learn how to navigate, audit, and extract explainable rules using the RULEX Console.</p>
+                    </div>
+
+                    <div class="instructions-section">
+                        <h2>🚀 Quick-Start Audit Guide</h2>
+                        <ol class="instructions-list">
+                            <li><strong>Select a Dataset:</strong> Switch to "Real Tabular" format on the left, then select a dataset like the <em>Pima Indians Diabetes</em> or <em>Titanic Survival</em>.</li>
+                            <li><strong>Pick a Data Point:</strong> Click on a row in the "Tabular Grid" at the bottom left. The Center Pipeline will immediately unlock.</li>
+                            <li><strong>Follow the Pipeline:</strong> Use the horizontal sub-tabs or the red "Next Step" buttons at the bottom of the cards to follow the rule extraction process through all 5 stages.</li>
+                            <li><strong>Audit and Compile:</strong> Stage 5 will evaluate compliance against GDPR/EU AI Act rules. Click "Generate Audit Report" to download a PDF report, and copy the compiled SQL or Python code.</li>
+                        </ol>
+                    </div>
+
+                    <div class="instructions-section">
+                        <h2>🕹️ Left Panel: Data Arena Controls</h2>
+                        <div class="instructions-grid">
+                            <div class="instr-card">
+                                <h3>Quick Start Presets</h3>
+                                <p>Loads pre-packaged data situations instantly:
+                                <ul>
+                                    <li><strong>Diabetes Risk:</strong> Loads Pima dataset, selects patient #12, and runs Local Anchors.</li>
+                                    <li><strong>Titanic Survival:</strong> Loads Titanic manifest, selects passenger #3, and runs compliance governance.</li>
+                                    <li><strong>Moons Space:</strong> Loads synthetic Moons and displays decision tree surrogates.</li>
+                                </ul>
+                                </p>
+                            </div>
+                            <div class="instr-card">
+                                <h3>Data Noise & Chaos</h3>
+                                <p>Controls the distribution spread of synthetic data. High noise values introduce overlap, forcing the neural network to develop winding, complex decision boundaries.</p>
+                            </div>
+                            <div class="instr-card">
+                                <h3>Boundary Blend (NN ➜ Tree)</h3>
+                                <p>Blends the colored prediction boundaries on the 2D plot. At 0%, it displays the raw Neural Network predictions. At 100%, it shows the surrogate Decision Tree rules. Mid-values blend them to visualize fidelity matches.</p>
+                            </div>
+                            <div class="instr-card">
+                                <h3>⚠️ Show Decision Discrepancies</h3>
+                                <p>Draws a glowing yellow heatmap overlay indicating regions of conflict. These are points in the feature space where the Surrogate Decision Tree disagrees with the Black-Box Neural Network predictions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="instructions-section">
+                        <h2>⚙️ Center Panel: Explanation Pipeline (5 Stages)</h2>
+                        <div class="instructions-grid">
+                            <div class="instr-card">
+                                <h3>01. Neural Net Activations</h3>
+                                <p>Displays a live activation path diagram of the Multi-Layer Perceptron. Clicked points are run through hidden layers (h1-h6) to show positive or negative nodes firing.</p>
+                            </div>
+                            <div class="instr-card">
+                                <h3>02. Global Surrogate Tree</h3>
+                                <p>Builds a transparent Decision Tree trained on the neural network's predictions. Adjusting the "Max Tree Depth" balances overall complexity and classification accuracy (Fidelity).</p>
+                            </div>
+                            <div class="instr-card">
+                                <h3>03. Local Anchor Engine</h3>
+                                <p>Creates local point variations (perturbations) to define a high-probability boundary box around the clicked point, extracting a local IF-THEN rule with custom Precision and Coverage bounds.</p>
+                            </div>
+                            <div class="instr-card">
+                                <h3>04. RuleFit Coefficients</h3>
+                                <p>Fits a sparse linear model using Lasso regularization over hundreds of extracted rules. Displays a coefficient bar chart indicating positive or negative impact on classification log-odds.</p>
+                            </div>
+                            <div class="instr-card">
+                                <h3>05. Audit & Deploy</h3>
+                                <p>Generates compliance checklist checks (transparency, GDPR Art. 22 explanation confidence, surrogate fidelity) and compiles the rule logic into Python functions, SQL case queries, or standard PMML schemas.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="instructions-section">
+                        <h2>🎛️ Header Controls & Visualizations</h2>
+                        <div class="instructions-grid">
+                            <div class="instr-card">
+                                <h3>View Level Switcher</h3>
+                                <p>Toggles dashboard complexity:
+                                <ul>
+                                    <li><strong>Simple Mode:</strong> Hides LaTeX math formulas, PMML/SQL compiler boxes, and raw weights, keeping the UI friendly.</li>
+                                    <li><strong>Academic Details:</strong> Restores all mathematical formulations, lasso code builders, and numerical values for in-depth research.</li>
+                                </ul>
+                                </p>
+                            </div>
+                            <div class="instr-card">
+                                <h3>Presenter HUD</h3>
+                                <p>A slide-deck controller that navigates our presentation deck. When you switch slides, the console automatically adjusts the 3D core viewport, switches tabs, and configures matching presets.</p>
+                            </div>
+                            <div class="instr-card">
+                                <h3>Right 3D Telemetry panel</h3>
+                                <p>An interactive, orbiting 3D latent space wireframe representation of the neural embeddings. Hovering on this panel lets you tilt the scene, and clicking tabs shifts the camera angles dynamically.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: MATHEMATICAL EXPLAINER -->
+            <div class="tab-content" id="mathView">
+                <div class="math-view">
+                    
+                    <div class="math-section">
+                        <h2>Global Surrogate (Fidelity & Information Gain)</h2>
+                        <p>The surrogate model \(g(x)\) (a Decision Tree) is trained on the dataset \(D\) using the labels predicted by the black-box model \(f(x)\). The <strong>Fidelity</strong> represents the classification accuracy of \(g(x)\) on the predictions of \(f(x)\):</p>
+                        <div class="math-block">
+                            \[\text{Fidelity}(g; f) = \frac{1}{|D|} \sum_{x \in D} \mathbb{I}(g(x) = f(x))\]
+                        </div>
+                        <p>To split nodes, the tree calculates the **Shannon Entropy** \(H(T)\) and **Information Gain** \(IG(T, a)\) for a split candidate \(a\):</p>
+                        <div class="math-block">
+                            \[H(T) = -\sum_{i=1}^C p_i \log_2 p_i\]
+                        </div>
+                        <div class="math-block">
+                            \[IG(T, a) = H(T) - \sum_{v \in \text{values}(a)} \frac{|T_v|}{|T|} H(T_v)\]
+                        </div>
+                    </div>
+
+                    <div class="math-section">
+                        <h2>Local Anchors (Perturbation & Precision Constraint)</h2>
+                        <p>An Anchor is a rule \(A\) such that if an instance \(x\) satisfies \(A\), then the black-box model \(f(x)\) predicts the same label with high probability. The local search optimization must satisfy the precision threshold \(\tau\) (e.g., \(95\%\)):</p>
+                        <div class="math-block">
+                            \[\mathbb{P}_{z \sim \mathcal{D}_x(z|A)} [f(x) = f(z)] \ge \tau\]
+                        </div>
+                        <p>Where \(\mathcal{D}_x(z|A)\) is the local perturbation distribution restricted to the rule space \(A\). The coverage represents the percentage of overall data points matching the rule:</p>
+                        <div class="math-block">
+                            \[\text{Cov}(A) = \mathbb{P}_{z \sim \mathcal{D}} [A(z) = 1]\]
+                        </div>
+                    </div>
+
+                    <div class="math-section">
+                        <h2>RuleFit (Lasso Sparsity Minimization)</h2>
+                        <p>RuleFit fits a sparse linear model combining the raw features \(x_j\) and the extracted tree rules \(r_k(x)\):</p>
+                        <div class="math-block">
+                            \[\hat{y}(x) = \beta_0 + \sum_{j=1}^p \beta_j x_j + \sum_{k=1}^K \alpha_k r_k(x)\]
+                        </div>
+                        <p>To select only the most critical rules, we optimize the Lasso objective function with an \(L_1\) regularization penalty \(\lambda\):</p>
+                        <div class="math-block">
+                            \[\min_{\beta, \alpha} \left\{ \frac{1}{N}\sum_{i=1}^N \mathcal{L}(y_i, \hat{y}(i)) + \lambda \left( \sum_{j=1}^p |\beta_j| + \sum_{k=1}^K |\alpha_k| \right) \right\}\]
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Persistent Right 3D Telemetry Viewport -->
+        <div class="right-3d-viewport">
+            <div class="telemetry-overlay">
+                <div class="telemetry-grid-crosshair tl"></div>
+                <div class="telemetry-grid-crosshair tr"></div>
+                <div class="telemetry-grid-crosshair bl"></div>
+                <div class="telemetry-grid-crosshair br"></div>
+                
+                <div class="telemetry-top">
+                    <div>
+                        <span>SYS.MODE // LATENT_SPACE</span>
+                        <div class="telemetry-line-detail"></div>
+                    </div>
+                    <span id="telemetryState">STATE: HOME</span>
+                </div>
+                
+                <div class="telemetry-bottom">
+                    <div>
+                        <span>GRID.SCAN // ACTIVE</span>
+                        <div>RENDER: THREEJS_WebGL</div>
+                    </div>
+                    <span>RULEX_V1.0</span>
+                </div>
+            </div>
+            <div class="hero-image-container" id="robot-3d-container">
+                <!-- Three.js Canvas will be initialized here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Welcome Portal Overlay -->
+    <div class="welcome-portal" id="welcomePortal">
+        <!-- Laser Scanline -->
+        <div class="welcome-scanline"></div>
+
+        <div class="welcome-card-container">
+            <!-- Telemetry Corners -->
+            <div class="telemetry-grid-crosshair tl"></div>
+            <div class="telemetry-grid-crosshair tr"></div>
+            <div class="telemetry-grid-crosshair bl"></div>
+            <div class="telemetry-grid-crosshair br"></div>
+
+            <div class="welcome-header">
+                <div class="welcome-logo">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h1>Welcome to RULEX Console</h1>
+                <p>NEURAL BOUNDARY AUDITOR // XAI ENGINE</p>
+            </div>
+            
+            <div class="welcome-presets">
+                <div class="welcome-preset-card" id="welcomeOptionStory">
+                    <div class="preset-icon">📖</div>
+                    <h3>Interactive Story</h3>
+                    <p>Learn explainable AI basics with a bank loan application narrative.</p>
+                    <button class="btn-cyber-primary">START STORY</button>
+                </div>
+                <div class="welcome-preset-card highlighted" id="welcomeOptionSandbox">
+                    <div class="preset-icon">⚡</div>
+                    <h3>Auditing Sandbox</h3>
+                    <p>Click, train, and extract rules from models in real-time.</p>
+                    <button class="btn-cyber-primary">LAUNCH SANDBOX</button>
+                </div>
+                <div class="welcome-preset-card" id="welcomeOptionSlides">
+                    <div class="preset-icon">📊</div>
+                    <h3>Slide Presenter</h3>
+                    <p>Walk through an educational presentation on rule mining.</p>
+                    <button class="btn-cyber-primary">VIEW SLIDES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MathJax for nice LaTeX formula equations rendering -->
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Three.js for 3D Cyber-Robot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="app.js?v=13"></script>
+</body>
+</html>
