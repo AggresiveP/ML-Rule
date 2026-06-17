@@ -41,7 +41,7 @@ where $\mathcal{D}_x(z|A)$ is the local perturbation distribution.
 
 ### 3. RuleFit
 RuleFit (Friedman & Popescu, 2008) extracts rule conditions from decision tree branches and solves a sparse linear model using $L_1$ Lasso regularization:
-$$\min_{\beta, \alpha} \left\{ \frac{1}{N}\sum_{i=1}^N \mathcal{L}(y_i, \hat{y}(i)) + \lambda \left( \sum_{j=1}^p |\beta_j| + \sum_{k=1}^K |\alpha_k| \right) \right\}$$
+$$\min_{\beta, \alpha} \left\\{ \frac{1}{N}\sum_{i=1}^N \mathcal{L}(y_i, \hat{y}(i)) + \lambda \left( \sum_{j=1}^p |\beta_j| + \sum_{k=1}^K |\alpha_k| \right) \right\\}$$
 
 ---
 
